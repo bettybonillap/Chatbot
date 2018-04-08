@@ -2,14 +2,20 @@ package com.example.beatr.chatbot;
 
 
 //import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.method.ScrollingMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import ai.api.AIDataService;
 import ai.api.AIListener;
@@ -26,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
     private EditText editText;
     private TextView textView;
     private Button button;
+
 
     private AIDataService aiDataService;
     private AIService aiService;
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         button=(Button) findViewById(R.id.button);
         editText=(EditText) findViewById(R.id.editText);
         textView=(TextView) findViewById(R.id.textView);
+        textView.setMovementMethod(new ScrollingMovementMethod());
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +87,12 @@ public class MainActivity extends AppCompatActivity implements AIListener{
         protected void onPostExecute(AIResponse aiResponse) {
             super.onPostExecute(aiResponse);
             Result result=aiResponse.getResult();
-            textView.append("You: "+ result.getResolvedQuery()+"\r\n");
-            textView.append("Bot: "+ result.getFulfillment().getSpeech()+"\r\n");
+            Spannable you= new SpannableString("You: "+ result.getResolvedQuery()+"\r\n");
+            Spannable bot= new SpannableString("Bot: "+ result.getFulfillment().getSpeech()+"\r\n");
+            you.setSpan(new ForegroundColorSpan(Color.RED), 0, you.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            bot.setSpan(new ForegroundColorSpan(Color.BLUE), 0, bot.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView.append(you);
+            textView.append(bot);
         }
     }
 
